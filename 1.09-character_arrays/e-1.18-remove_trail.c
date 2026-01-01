@@ -12,23 +12,10 @@ int main(void)
 {
   int len;                  // current line length
   char line[MAXLINE];       // current input line
-  char line_s[MAXLINE]; 
-  char line_p[MAXLINE];
-
   while ((len = getLine(line, MAXLINE)) > 0) {
-
-    copy(line_p, line);
     int has_char = removeTrail(line, MAXLINE);
-    if ( has_char == 1 ) {
-
-      copy(line_s, line_p);
-      replaceNewLine(line_s, len, '@');
-      printf("PRE: %s:E\n", line_s);
-
-      copy(line_s, line);
-      replaceNewLine(line_s, len, '@');
-      printf("AFT: %s:E\n", line_s);
-
+    if ( has_char > 0 ) {
+      printf("%s", line);
     }
 
   }
