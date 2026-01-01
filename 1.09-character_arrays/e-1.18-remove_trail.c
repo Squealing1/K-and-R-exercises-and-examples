@@ -14,9 +14,7 @@ int main(void)
   char line[MAXLINE];       // current input line
   while ((len = getLine(line, MAXLINE)) > 0) {
     int has_char = removeTrail(line, MAXLINE);
-    if ( has_char > 0 ) {
-      printf("%s", line);
-    }
+    printf("%s", line);
 
   }
   
