@@ -17,7 +17,7 @@ int main(void)
     printf("%s", line);
 
   }
-  
+
   return 0;
 }
 
@@ -40,17 +40,17 @@ int lastNonBlankTab(char s[], int len){
     if ( c != '\t' && c != ' ') last_index = i;
   }
   return last_index;
-    
+
 }
 
-/* Remove tabs and spaces at end of line 
+/* Remove tabs and spaces at end of line
  * Return 0 - only tabs and spaces
  * Return 1 - Some characters that are not tabs or spaces
  * Return 2 - All characters are not tabs or spaces */
 int removeTrail(char s[], int len){
   int last_index;
   last_index = lastNonBlankTab(s, len);
-  if ( last_index == -1 ){ 
+  if ( last_index == -1 ){
     s[0] = '\n';
     s[1] = '\0';
     return 0;
