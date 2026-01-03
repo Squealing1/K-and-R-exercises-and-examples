@@ -32,14 +32,12 @@ void detab(char s[], char dt_s[], int tabstop){
   while ( s[str_len] != '\n') {
     dt_s[dt_s_i] = s[str_len];
     if ( s[str_len] == '\t' ) {
-      for ( int i = 0; i < tabstop; i++) { // Replace tab with tabstop spaces
-        dt_s[dt_s_i] = ' '; 
-        dt_s_i++;
-      }
+      int pre_dt_s_i = dt_s_i;
+      int spaces = tabstop - (dt_s_i % tabstop);
+      for ( int space = 0; space < spaces; space++) dt_s[dt_s_i + space] = ' ';
+      dt_s_i += spaces;
     }
-    else {
-      dt_s_i++;
-    }
+    else dt_s_i++;
     str_len++;
   }
   dt_s[dt_s_i] = '\n';
