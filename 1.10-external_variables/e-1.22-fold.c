@@ -1,7 +1,7 @@
 /* Reads a set of text lines and prints the longest one. */
 #include <stdio.h>
 
-#define MAXLINE 256
+#define MAXLINE 1000
 #define TABSTOP 8
 #define WRAPWIDTH 16
 #define TESTTABSTOP 8
@@ -12,36 +12,39 @@ void appendString(char to[], char from[]);
 int getStringLen(char s[]);
 int getSubString(char sub[], char s[], int str, int end);
 void stripExtraNewlines(char s[]);
+void wrapLine(char line[], char append[]);
 
 int main(void)
 {
   char append[MAXLINE] = "";
   char append_simple[MAXLINE] = "";
   char line[MAXLINE];
-  char wt_line[MAXLINE] = "";
   int len;
   int wrap = 0;
   while((len = getLine(line, MAXLINE)) > 0) {
+    wrapLine(line, append);
+  }
+
+  return 0;
+}
+
+void wrapLine(char line[], char append[]){
+    int len;
     append[0] = '\0';
-    append_simple[0] = '\0';
     len = getStringLen(line);
     printf("len: %d\n", len);
+    char wt_line[MAXLINE] = "";
     int wraps = 0;
     for (int i = 0; i < len; i+=WRAPWIDTH) {
       getSubString(wt_line, line, i, i + WRAPWIDTH-1);
       appendString(append,wt_line);
       appendString(append,"\n");
-      appendString(append_simple, "TU");
     }
 
     stripExtraNewlines(append);
 
 
     printf("%s",append);
-    printf("%s\n",append_simple);
-  }
-
-  return 0;
 }
 
 void stripExtraNewlines(char s[]){
