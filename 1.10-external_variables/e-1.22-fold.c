@@ -13,6 +13,7 @@ int getStringLen(char s[]);
 int getSubString(char sub[], char s[], int str, int end);
 void stripExtraNewlines(char s[]);
 void wrapLine(char line[], char append[]);
+void appendChar(char to[], char from);
 
 int main(void)
 {
@@ -35,10 +36,11 @@ void wrapLine(char line[], char append[]){
     printf("len: %d\n", len);
     char wt_line[MAXLINE] = "";
     int wraps = 0;
-    for (int i = 0; i < len; i+=WRAPWIDTH) {
-      getSubString(wt_line, line, i, i + WRAPWIDTH-1);
-      appendString(append,wt_line);
-      appendString(append,"\n");
+    int i;
+    for (int i = 0; i < len; i+=1) { 
+      appendChar(append,line[i]);
+      if ( i % WRAPWIDTH == 0 ) 
+        appendString(append,"\n");
     }
 
     stripExtraNewlines(append);
@@ -74,13 +76,16 @@ int getStringLen(char s[]){
   return i; // include '\0'
 }
 
-void appendString(char to[], char from[]){
+void appendChar(char to[], char from){
+  int len_to = getStringLen(to);
+  to[len_to] = from;
+  to[len_to+1] = '\0';
+}
 
+void appendString(char to[], char from[]){
   int len_to = getStringLen(to);
   int len_from = getStringLen(from);
   for (int i = 0; i < len_from + 2 /* include \0*/; i++) to[len_to + i] = from[i];
-
-
 }
 
 /* getLine: read a line into s, return length */
