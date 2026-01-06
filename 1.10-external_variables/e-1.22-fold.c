@@ -1,7 +1,7 @@
 /* Reads a set of text lines and prints the longest one. */
 #include <stdio.h>
 
-#define MAXLINE 1000
+#define MAXLINE 256
 #define TABSTOP 8
 #define WRAPWIDTH 16
 #define TESTTABSTOP 8
@@ -20,6 +20,7 @@ void fail_test(char fail_message[], char input_string[], char result_string[], c
 int tests();
 int tabcolumns(int column, int tabstop) { return tabstop - (column % tabstop); }
 int get_line_length(char line[]);
+void append_string(char to[], char from[], int empty);
 
 int main(void)
 {
@@ -46,8 +47,13 @@ int main(void)
 
 
 int check_test(char success_message[], char fail_message[], char input_string[], char result_string[], char expected_string[]) {
-  if ( is_same(result_string, expected_string ) ) { printf("%s\n",success_message); return 1; }
-  else { fail_test(fail_message, input_string, result_string, expected_string); return 0; }
+  int result;
+  if ( is_same(result_string, expected_string ) ) { printf("%s\n",success_message); 
+    result = 1; }
+  else { fail_test(fail_message, input_string, result_string, expected_string); 
+    result = 0; }
+  printf("E----------------------------------E\n");
+  return result;
 }
 
 void fail_test(char fail_message[], char input_string[], char result_string[], char expected_string[]) {
@@ -62,7 +68,7 @@ void fail_test(char fail_message[], char input_string[], char result_string[], c
 }
 
 void cut_string(char cut[], char from[], int str, int end){
-  for ( int i = str; i < end; i++) {
+  for ( int i = str; i <= end; i++) {
     cut[i - str] = from[i];
   }
 }
@@ -100,52 +106,97 @@ int get_string_length(char s[]){
   return i;
 }
 
+
+
 void wrapLine(char line[],  char result[], int wrapwidth, int tabstop){
-  int wrap_index = 0;
-  int insert_index = 0;
-  int start_index = 0;
-  char wt_line[MAXLINE];
-  int empty;
-  while ((wrap_index = findWrapIndex(line, start_index, wrapwidth, tabstop)) - start_index > 0){
-    wrap_index = findWrapIndex(line, start_index, wrapwidth, tabstop);
-    int wrap_len = wrap_index - start_index;
-    cut_string(wt_line, line, start_index, wrap_index + 1);
-    int wt_start = 0;
-    int wt_end = wrap_len + 2;
-    int r_str = insert_index;
-    int r_end = wrap_index + 2 + (insert_index - start_index);
+  int white_count = 0;
+  int char_count = 0;
+  int wrap_count = 0;
+  for ( int i; line[i] != '\n'; i++){
+    if ( line[i] == ' ' ) {
 
 
-    wt_line[wrap_len + 1] = '\n';
-    if (!copy_to_string(result, wt_line, insert_index, wrap_index + 2 + (insert_index - start_index), 0, wrap_len + 2)) {
-      printf("Failed to copy\n");
-    }
-    start_index = wrap_index + 1;
-    insert_index = start_index + 1;
-    result[insert_index+1] = '\0';
   }
 }
 
-int wrap_test(char test_message[], char success_message[], char fail_message[], char input_string[], char expected_string[], int wrapwidth, int tabstop){
-  printf("%s: ",test_message);
-  char result_string[MAXLINE];
+
+int string_test(char test_message[], char success_message[], char fail_message[], char input_string[], char result_string[], char expected_string[]){
+    printf("----------- %s ----------\n", test_message);
+    char result_string_copy[MAXLINE];
+    char input_string_copy[MAXLINE];
+    char expected_string_copy[MAXLINE];
+    copy(input_string_copy, input_string);
+    copy(expected_string_copy, expected_string);
+    copy(result_string_copy, result_string); 
+    return check_test(success_message, fail_message, input_string_copy, result_string_copy, expected_string_copy);
+  }
+
+void wrap_test(char input_string[], char result_string[],  int wrapwidth, int tabstop){
   char input_string_copy[MAXLINE];
   char expected_string_copy[MAXLINE];
   copy(input_string_copy, input_string);
-  copy(expected_string_copy, expected_string);
   wrapLine(input_string_copy, result_string, wrapwidth, tabstop); 
-  return check_test(success_message, fail_message, input_string_copy, result_string, expected_string_copy);
+}
+
+void append_string(char to[], char from[], int empty){
+  int len_to;
+  if (empty) {len_to = 0; copy(to,"\0"); }
+  else for(len_to = 0; to[len_to] != '\0'; len_to++);
+  int len_from;
+  for (len_from = 0; from[len_from] != '\0'; len_from++) to[len_to + len_from] = from[len_from];
+  to[len_to + len_from] = '\0';
 }
 
 int tests() {
   int passed_tests = 0;
   int total_tests = 0;
+  char result_string[MAXLINE];
+  char input_string[MAXLINE];
+  char expected_string[MAXLINE];
 
+  copy(input_string,    "THEDOG\n");
+  copy(expected_string, "THEDOG\n");
+  copy(result_string, input_string);
+  passed_tests += string_test("COPYTHEMALL", "PASS","FAIL", input_string, result_string, result_string);
 
-  passed_tests += wrap_test("ALLCHAR",          "PASS", "FAIL", "xxxxxxxxxxxxxxxx\n"    , "xxxxxxxxxxxxxxxx\n"  , TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
-  passed_tests += wrap_test("ALLBLANK",          "PASS", "FAIL", "                \n"    , "                \n"  , TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
-  passed_tests += wrap_test("ONEWRAP",          "PASS", "FAIL", "xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx\n"    , "xxxxxxxxxxxxxxxx\n xxxxxxxxxxxxxxxx\n"  , TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
-  passed_tests += wrap_test("MULTIBLANKWRAP",          "PASS", "FAIL", "xxx xxx xxx xx xxxxxxxxxxxxxxxxxx\n"    , "xxx xxx xxx xx xx\nxxxxxxxxxxxxxxxx\n"  , TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
+  copy(input_string,    "N/A\n");
+  copy(expected_string, "THE DOG RAN\n");
+  copy(result_string, "THE DOG");
+  append_string(result_string, " RAN\n", 0);
+  passed_tests += string_test("APENDSTRING", "PASS","FAIL", input_string, result_string, expected_string);
+
+  copy(expected_string, "THE DOG RAN FAST\n");
+  append_string(result_string, "THE DOG RAN FAST\n", 1);
+  passed_tests += string_test("APENDTOEMPTYSTRING", "PASS","FAIL", input_string, result_string, expected_string);
+
+  copy(expected_string, "THE DOG RAN\n");
+  append_string(result_string, "THE", 1);
+  append_string(result_string, " DOG", 0);
+  append_string(result_string, " RAN\n", 0);
+  passed_tests += string_test("APENDSTRINGTHRICE", "PASS","FAIL", input_string, result_string, expected_string);
+
+  copy(expected_string, "THE DOG RAN FAST\n");
+  copy(result_string, "");
+  append_string(result_string, "THE DOG RAN FAST\n", 1);
+  passed_tests += string_test("APENDTOEMPTYSTRING", "PASS","FAIL", input_string, result_string, expected_string);
+
+  copy(input_string,    "xxxxxxxxxxxxxxxx\n");
+  copy(expected_string, "xxxxxxxxxxxxxxxx\n");
+  copy(result_string, "");
+  wrap_test(input_string,    result_string, WRAPWIDTH, TABSTOP   ); total_tests++;
+  passed_tests += string_test("ALLCHAR", "PASS","FAIL", input_string, result_string, expected_string); total_tests++;
+
+  copy(input_string,    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n");
+  copy(expected_string, "xxxxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxx\n");
+  copy(result_string, "");
+  wrap_test(input_string,    result_string, WRAPWIDTH, TABSTOP   ); total_tests++;
+  passed_tests += string_test("BIGCHAR", "PASS","FAIL", input_string, result_string, expected_string); total_tests++;
+
+  copy(input_string,    "xxxxxxxxxxxxxxx     xxxxxxxxxxxx\n");
+  copy(expected_string, "xxxxxxxxxxxxxxx\n     xxxxxxxxxxxxxxxx\n");
+  copy(result_string, "");
+  wrap_test(input_string,    result_string, WRAPWIDTH, TABSTOP   ); total_tests++;
+  passed_tests += string_test("BIGCHAR", "PASS","FAIL", input_string, result_string, expected_string); total_tests++;
 
   return 0;
 }
@@ -174,13 +225,26 @@ void replaceNewLine(char s[], char replacement) {
 int findWrapIndex(char line[], int start_index, int wrapwidth, int tabstop) {
   int check_index;
   int last_character_before_wrap = -1;
+  int last_white_before_wrap = -1;
   for (check_index = start_index; line[check_index] != '\n' && check_index - start_index  <= wrapwidth; check_index++){
     char c = line[check_index];
-    if ( c == ' ' ) {}
+    if ( c == ' ' ) { last_white_before_wrap = check_index; }
     else { last_character_before_wrap = check_index; }
   }
-  if ( last_character_before_wrap == -1 ) { return  check_index - 1; }
-  return last_character_before_wrap;
+  
+  if (check_index - start_index > wrapwidth) { 
+    if ( last_character_before_wrap == -1 ) { return  check_index - 1; }
+    return last_character_before_wrap;
+  }
+  else {
+    if ( last_character_before_wrap != -1 && last_white_before_wrap != -1 ) {
+      if ( last_character_before_wrap > last_white_before_wrap ) return last_character_before_wrap;
+      else return last_white_before_wrap;
+    }
+    else {
+      return check_index;
+    }
+  }
 }
 
 
@@ -210,6 +274,9 @@ void copy(char to[], char from[])
   int i;
 
   i = 0;
-  while ((to[i] = from[i]) != '\0')
+  while (from[i] != '\0'){
+    to[i] = from[i];
     ++i;
+  }
+  to[i] = '\0';
 }
