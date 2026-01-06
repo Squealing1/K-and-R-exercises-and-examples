@@ -35,13 +35,20 @@ void wrapLine(char line[], char append[]){
     len = getStringLen(line);
     printf("len: %d\n", len);
     char wt_line[MAXLINE] = "";
-    int wraps = 0;
     int i;
+    int last_char = 0;
+    int past_wrap = 0;
     for (int i = 0; i < len; i+=1) { 
-      appendChar(append,line[i]);
-      if ( i % WRAPWIDTH == 0 ) 
-        appendString(append,"\n");
+      appendChar(wt_line,line[i]);
+      if ( (i + 1) % WRAPWIDTH == 0 ) past_wrap = 1;
+      if ( past_wrap ) {
+       appendString(append,wt_line);
+       appendString(append,"\n");
+       past_wrap = 0;
+       wt_line[0] = '\0';
+      }
     }
+    appendString(append, wt_line);
 
     stripExtraNewlines(append);
 
