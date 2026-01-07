@@ -33,11 +33,12 @@ int main(void)
   char line[MAXLINE];
   int len;
   int wrap = 0;
-//  while((len = getLine(line, MAXLINE)) > 0) {
-//    wrapLine(line, append, WRAPWIDTH, TABSTOP);
-//  }
+  while((len = getLine(line, MAXLINE)) > 0) {
+    wrapLine(line, append, WRAPWIDTH, TABSTOP);
+    printf("%s",append);
+  }
 
-  tests();
+  //tests();
 
   return 0;
 }
@@ -169,25 +170,19 @@ void wrapLine(char line[],  char result_line[], int wrapwidth, int tabstop){
     int wrap_count = 0;
     for (int i = 0; i <= len; i+=1) { 
       appendChar(wt_line,line[i]);
-      printf("wtl[:%s:]\n", wt_line);
       if ( wrap_count > wrapwidth - 2) {
-        wrapOnce(line, result_line, wt_line, wrap_count);
-        wrap_count = 0;
-        printf("result_current: %s\n", result_line);
+        int left_over_blanks = wrapOnce(line, result_line, wt_line, wrap_count);
+        wrap_count = left_over_blanks;
       }
       else
       {
         wrap_count++;
       }
-      printf("WC: %d\n", wrap_count);
     }
-      printf("wtl[:%s:]\n", wt_line);
     int len_wt = getStringLen(wt_line);
     if (len_wt > 0){
-
       appendString(result_line, wt_line);
       stripExtraNewlines(result_line);
-      
     }
 }
 
@@ -203,19 +198,15 @@ int wrapOnce(char line[], char result_line[], char wt_line[], int wrap_count){
           appendString(result_line, "\n");
         }
         else {
-          printf("NO LAST CHAR\n");
           appendString(result_line, "\n");
         }
 
         appendString(result_line, wt_after);
-        printf("wtl[:%s:]\n", wt_line);
-        printf("wtb[:%s:]\n", wt_before);
-        printf("wta[:%s:]\n", wt_after);
-        printf("last_char: %d\n", last_char);
+        int wt_after_len = getStringLen(wt_after);
         wt_line[0] = '\0';
         wt_before[0] = '\0';
         wt_after[0] = '\0';
-        return 1;
+        return wt_after_len;
 }
 
 
