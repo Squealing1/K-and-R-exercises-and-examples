@@ -39,7 +39,7 @@ int main(void)
     printf("%s",append);
   }
 
-  tests();
+  //tests();
 
   return 0;
 }
