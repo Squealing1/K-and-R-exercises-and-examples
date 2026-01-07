@@ -58,7 +58,7 @@ void copy(char to[], char from[])
     ++i;
 }
 int checkTest(char success_message[], char fail_message[], char input_string[], char result_string[], char expected_string[]) {
-  printf("---[:0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF:]\n");
+  printf("---[:0123456789ABCDEFG0123456789ABCDEFG0123456789ABCDEFG0123456789ABCDEFG:]\n");
   char is_c[MAXLINE];
   char rs_c[MAXLINE];
   char es_c[MAXLINE];
@@ -156,6 +156,7 @@ int tests() {
   passed_tests += wrap_test("NEWLINE","PASS", "FAIL", "\n", "\n", TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
   passed_tests += wrap_test("ONEBLANK","PASS", "FAIL", " \n", " \n", TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
   passed_tests += wrap_test("ONEWRAP","PASS", "FAIL", "xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx\n", "xxxxxxxxxxxxxxxx\n xxxxxxxxxxxxxxx\nx\n", TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
+  passed_tests += wrap_test("ONEWRAP","PASS", "FAIL", "xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n", "xxxxxxxxxxxxxxxx\n xxxxxxxxxxxxxxx\nx xxxxxxxxxxxxxx\nxxxxxxxxxxxxxxxx\nxxxxxx\n", TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
   passed_tests += wrap_test("MULTIBLANKWRAP","PASS", "FAIL", "xxx xxx xxx xx xxxxxxxxxxxxxxxxxx\n", "xxx xxx xxx xx x\nxxxxxxxxxxxxxxxx\nx\n", TESTWRAPWIDTH, TESTTABSTOP); total_tests++;
 
   printf("Pass %d/%d tests.\n",passed_tests,total_tests);
