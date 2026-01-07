@@ -8,6 +8,7 @@
 #define TESTWRAPWIDTH 16
 
 int wrap_test(char test_message[], char success_message[], char fail_message[], char input_string[], char expected_string[], int wrapwidth, int tabstop);
+void emptyString(char s[]);
 int checkTest(char success_message[], char fail_message[], char input_string[], char result_string[], char expected_string[]);
 int getLine(char s[], int lim);
 void appendString(char to[], char from[]);
@@ -38,7 +39,7 @@ int main(void)
     printf("%s",append);
   }
 
-  //tests();
+  tests();
 
   return 0;
 }
@@ -122,29 +123,29 @@ int tests() {
 
   passed_tests += stringTest("SUBSTRINGPARTIAL_0_TO_10_OF_35", "PASS", "FAIL", "0123456789A", result_string, "0123456789A"); total_tests++;
 
-  result_string[0] = '\0';
+emptyString(  result_string);
   appendChar(result_string, '\n');
   passed_tests += stringTest("APPENDCHARNEWLINE", "PASS", "FAIL", "\n", result_string, "\n"); total_tests++;
 
-  result_string[0] = '\0';
+emptyString(  result_string);
   appendChar(result_string, '\n');
   appendChar(result_string, '\n');
   passed_tests += stringTest("APPENDCHARNEWLINETWICE", "PASS", "FAIL", "\n\n", result_string, "\n\n"); total_tests++;
 
-  result_string[0] = '\0';
+emptyString(  result_string);
   appendString(result_string, "\n");
   appendString(result_string, "\n");
   passed_tests += stringTest("APPENDSTRINGNEWLINETWICE", "PASS", "FAIL", "\n\n", result_string, "\n\n"); total_tests++;
 
   char input_parts[MAXLINE] = "";
-  result_string[0] = '\0';
+emptyString(  result_string);
   appendChar(input_parts, 'x');
   appendChar(input_parts, '\n');
   appendString(result_string, input_parts);
   passed_tests += stringTest("APPENDBUILT_FROM_CHAR_STRING_X_NL", "PASS", "FAIL", "x\n", result_string, "x\n"); total_tests++;
 
-  input_parts[0] = '\0';
-  result_string[0] = '\0';
+emptyString(  input_parts);
+emptyString(  result_string);
   appendChar(input_parts, '\n');
   appendString(result_string, input_parts);
   printf("result_string: %s\n",result_string);
@@ -163,7 +164,7 @@ int tests() {
 }
 void wrapLine(char line[],  char result_line[], int wrapwidth, int tabstop){
     int len;
-    result_line[0] = '\0';
+emptyString(    result_line);
     len = getStringLen(line);
     char wt_line[MAXLINE] = "";
     int i;
@@ -203,9 +204,9 @@ int wrapOnce(char line[], char result_line[], char wt_line[], int wrap_count){
 
         appendString(result_line, wt_after);
         int wt_after_len = getStringLen(wt_after);
-        wt_line[0] = '\0';
-        wt_before[0] = '\0';
-        wt_after[0] = '\0';
+emptyString(        wt_line);
+emptyString(        wt_before);
+emptyString(        wt_after);
         return wt_after_len;
 }
 
@@ -254,6 +255,10 @@ int getStringLen(char s[]){
   int i;
   for (i = 0; s[i] != '\0'; i++);
   return i; // include '\0'
+}
+
+void emptyString(char s[]){
+  s[0] = '\0';
 }
 
 void appendChar(char to[], char from){
