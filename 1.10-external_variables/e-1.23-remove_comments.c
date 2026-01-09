@@ -51,23 +51,25 @@ void copy(char to[], char from[])
 }
 
 /* Find index of first character of substring in from string */
-int findString(char from[], char substring[]){
+int findString(char from[], char substring[], int start_search_index){
   int sub_len = getStringLen(substring);
   int from_len = getStringLen(from);
+  printf("%d\n", -110);
   if (sub_len > from_len) return -1;
   else if (sub_len == from_len){
     if (isSame(from, substring, MAXLINE)) return 0;
     else return -1;
   }
-  int start_index = 0; 
-  int end_index = 0;
+  printf("%d\n", -110);
+  int start_index = start_search_index; 
+  int end_index = start_search_index;
   int in_substring = 0;
-  for (int i = 0; i < from_len; i++){
+  for (int i = start_search_index; i < from_len; i++){
+    if (!in_substring) {
+      start_index = i;
+    }
     end_index = i;
     if ( from[i] == substring[end_index-start_index] ) {
-      if (!in_substring) {
-        start_index = i;
-      }
       if (end_index - start_index == sub_len - 1) {
         return start_index; // Found sub string
       }
@@ -75,6 +77,7 @@ int findString(char from[], char substring[]){
     }
     else {
       in_substring = 0;
+      start_index = i;
     }
   }
   return -1; // Negative indicates substring was not found
@@ -173,10 +176,11 @@ int tests() {
   printf("result_string: %s\n",result_string);
   passed_tests += stringTest("APPENDBUILT_FROM_CHAR_STRING_NL", "PASS", "FAIL", "\n", result_string, "\n"); total_tests++;
 
-  passed_tests += checkIntTest("FIND_SUBSTRING", "PASS", "FAIL", findString("xxxSUBSTRINGxxx", "SUBSTRING"), 3); total_tests++;
-  passed_tests += checkIntTest("DONT_FIND_SUBSTRING", "PASS", "FAIL", findString("xxxSUBSTRINGxxx", "PIG"), -1); total_tests++;
-  passed_tests += checkIntTest("DONT_FIND_SUBSTRING_BIG_SUBSTRING", "PASS", "FAIL", findString("xxx", "xxxxxxxx"), -1); total_tests++;
-  passed_tests += checkIntTest("SAMESIZEFIND", "PASS", "FAIL", findString("DOG", "DOG"), 0); total_tests++;
+  passed_tests += checkIntTest("FIND_SUBSTRING", "PASS", "FAIL", findString("xxxSUBSTRINGxxx", "SUBSTRING", 0), 3); total_tests++;
+  passed_tests += checkIntTest("DONT_FIND_SUBSTRING", "PASS", "FAIL", findString("xxxSUBSTRINGxxx", "PIG", 0), -1); total_tests++;
+  passed_tests += checkIntTest("DONT_FIND_SUBSTRING_BIG_SUBSTRING", "PASS", "FAIL", findString("xxx", "xxxxxxxx", 0), -1); total_tests++;
+  passed_tests += checkIntTest("SAMESIZEFIND", "PASS", "FAIL", findString("DOG", "DOG", 0), 0); total_tests++;
+  passed_tests += checkIntTest("LATERSEARCH", "PASS", "FAIL", findString("DOGBONEDOG", "DOG", 3), 7); total_tests++;
 
   printf("Pass %d/%d tests.\n",passed_tests,total_tests);
 
