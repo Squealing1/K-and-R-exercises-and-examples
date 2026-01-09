@@ -23,15 +23,11 @@ void failTest(char fail_message[], char input_string[], char result_string[], ch
 int stringTest(char test_message[], char success_message[], char fail_message[], char input_string[], char result_string[], char expected_string[]);
 int tests();
 void copy(char to[], char from[]);
-int wrapOnce(char line[], char result_line[], char wt_line[], int wrap_count);
 
 int main(void)
 {
-  char append[MAXLINE] = "";
-  char append_simple[MAXLINE] = "";
   char line[MAXLINE];
   int len;
-  int wrap = 0;
   // while((len = getLine(line, MAXLINE)) > 1) {
   //   printf("%s",append);
   // }
@@ -186,54 +182,6 @@ int tests() {
 
   return 0;
 }
-void wrapLine(char line[],  char result_line[], int wrapwidth, int tabstop){
-    int len;
-    emptyString(    result_line);
-    len = getStringLen(line);
-    char wt_line[MAXLINE] = "";
-    int i;
-    int wrap_count = 0;
-    for (int i = 0; i <= len; i+=1) { 
-      appendChar(wt_line,line[i]);
-      if ( wrap_count > wrapwidth - 2) {
-        int left_over_blanks = wrapOnce(line, result_line, wt_line, wrap_count);
-        wrap_count = left_over_blanks;
-      }
-      else
-      {
-        wrap_count++;
-      }
-    }
-    int len_wt = getStringLen(wt_line);
-    if (len_wt > 0){
-      appendString(result_line, wt_line);
-      stripExtraNewlines(result_line);
-    }
-}
-
-int wrapOnce(char line[], char result_line[], char wt_line[], int wrap_count){
-        char wt_before[MAXLINE] = "";
-        char wt_after[MAXLINE] = "";
-        int last_char = getLastCharIndex(wt_line);
-        if (last_char != -1){
-          int wt_len = getStringLen(wt_line);
-          getSubString(wt_before, wt_line, 0, last_char);
-          getSubString(wt_after, wt_line, last_char + 1, wt_len);
-          appendString(result_line,wt_before);
-          appendString(result_line, "\n");
-        }
-        else {
-          appendString(result_line, "\n");
-        }
-
-        appendString(result_line, wt_after);
-        int wt_after_len = getStringLen(wt_after);
-        emptyString(        wt_line);
-        emptyString(        wt_before);
-        emptyString(        wt_after);
-        return wt_after_len;
-    }
-
 
 void replaceAllInString(char s[], char to, char from){
   int len = getStringLen(s);
